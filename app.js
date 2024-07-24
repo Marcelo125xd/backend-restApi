@@ -3,6 +3,7 @@ import express from 'express';
 import { Empleado, Clientes, sequelize } from './bd.js';
 import { GestorEmpleados } from './gestor/gestorEmpleados.js';
 import { GestorClientes } from './gestor/gestorClientes.js';
+import { ARRAY, json, Op } from "sequelize";
 
 
 const PORT = 3030;
@@ -67,32 +68,18 @@ app.get('/Empleados/:id', async (req, res) => {
   
   
   
-  
+
+
   app.post('/Empleados/', async (req, res) => {
     try {
-      // Validación
-      if (!req.body.nombre || typeof req.body.nombre !== 'string' || req.body.nombre.trim() === "") {
-        return res.status(400).json({ message: "Nombre del empleado es requerido y debe ser una cadena no vacía" });
-      }
-      if (!req.body.apellido || typeof req.body.apellido !== 'string' || req.body.apellido.trim() === '') {
-        return res.status(400).json({ message: "Apellido del empleado es requerido y debe ser una cadena no vacía" });
-      }
-      if (!req.body.fecha_nacimiento || !isValidDate(req.body.fecha_nacimiento)) {
-        return res.status(400).json({ message: "Fecha de nacimiento del empleado es requerida y debe tener un formato válido (YYYY-MM-DD)" });
-      }
-     
-      if (!req.body.id_cliente || typeof req.body.id_cliente !== 'number') {
-        return res.status(400).json({ message: "El id de empleados del empleado es obligatorio" });
-      }
-  
-      // Creación del empleado si las validaciones pasan
-      const nuevoEmpleado = await gestorEmpleados.crearEmpleado(req.body);
-  
+      const body = req.body
+      const nuevoEmpleado = await gestorEmpleados.crearEmpleado(body)
       res.status(201).json(nuevoEmpleado);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
     }
-  });
+    catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  })
   
   
   
